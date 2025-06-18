@@ -9,9 +9,14 @@ test('POST /auth/login autentica usuario válido', async () => {
 });
 
 test('POST /auth/login con credenciales incorrectas falla', async () => {
-  const response = await post('/auth/login', {
-    username: 'wrong_user',
-    password: 'wrong_pass',
-  });
-  expect(response.status).toBe(401);
+  try {
+    await post('/auth/login', {
+      username: 'wrong_user',
+      password: 'wrong_pass',
+    });
+    // Si entra aquí, fallamos la prueba porque no devolvió 401
+    throw new Error('La autenticación fallida no devolvió 401');
+  } catch (error: any) {
+    expect(error.response.status).toBe(401);
+  }
 });
